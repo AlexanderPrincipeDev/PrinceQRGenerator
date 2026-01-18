@@ -30,23 +30,19 @@
                 <i class="fa-solid fa-qrcode"></i>
                 <span>Prince QR</span>
             </div>
-            <nav>
-                <!-- minimal nav for now -->
-                <a href="#" class="active">Generador</a>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav id="main-nav">
+                <a href="index.html" class="active">Generador</a>
+                <a href="guide.html">Guía de Uso</a>
+                <a href="faq.html">Preguntas Frecuentes</a>
+                <a href="about.html">Acerca de</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <section class="hero">
-            <div class="container hero-content">
-                <div class="hero-text">
-                    <h1>Crea Códigos QR <span class="highlight">Profesionales</span></h1>
-                    <p>Personaliza colores, formas y descarga en formatos de alta calidad. Gratis y rápido.</p>
-                </div>
-            </div>
-        </section>
-
         <section class="generator-section container">
             <div class="generator-wrapper">
                 <!-- Controls Side -->
@@ -304,15 +300,6 @@
                                 <option value="512">512x512 px</option>
                                 <option value="1024" selected>1024x1024 px</option>
                                 <option value="2048">2048x2048 px</option>
-                            </select>
-                        </div>
-                        <div class="qr-option-group">
-                            <label for="error-correction">Corrección de Errores:</label>
-                            <select id="error-correction" title="Mayor corrección = más resistente a daños">
-                                <option value="L">L - Baja (7%)</option>
-                                <option value="M" selected>M - Media (15%)</option>
-                                <option value="Q">Q - Alta (25%)</option>
-                                <option value="H">H - Muy Alta (30%)</option>
                             </select>
                         </div>
                     </div>

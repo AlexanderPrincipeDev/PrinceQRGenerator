@@ -74,18 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Export Options
     const qrSizeSelect = document.getElementById('qr-size');
-    const errorCorrectionSelect = document.getElementById('error-correction');
 
     // --- Initialization ---
     let currentLogo = ""; // Store current logo data URL
     const qrCode = new QRCodeStyling({
         width: 300,
         height: 300,
-        type: "svg",
+        type: "canvas", // Using canvas to enable history thumbnails
         data: qrText,
         image: "",
         qrOptions: {
-            errorCorrectionLevel: "M"
+            errorCorrectionLevel: "H" // Fixed high level for better reliability with logos
         },
         dotsOptions: {
             color: defaultColors.dots,
@@ -116,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: getQRData(),
             image: currentLogo,
             qrOptions: {
-                errorCorrectionLevel: errorCorrectionSelect.value
+                errorCorrectionLevel: "H" // Fixed high level for better reliability with logos
             },
             dotsOptions: {
                 color: dotsColorInput.value,
@@ -464,13 +463,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     });
 
-    // Error Correction
-    errorCorrectionSelect.addEventListener('change', updateQR);
+
 
     // History
     clearHistoryBtn.addEventListener('click', clearAllHistory);
 
     // Initialize history on page load
     loadHistory();
+
+    // Mobile Menu Toggle
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+
+    if (mobileMenuToggle && mainNav) {
+        mobileMenuToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (mainNav.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Close menu when clicking on a link
+        const navLinks = mainNav.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mainNav.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            });
+        });
+    }
 
 });

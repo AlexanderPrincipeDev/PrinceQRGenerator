@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Uso | Prince QR Generator</title>
+    <meta name="description"
+        content="Aprende a usar Prince QR Generator paso a paso. Guía completa para crear códigos QR personalizados.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fa-solid fa-qrcode"></i>
+                <span>Prince QR</span>
+            </div>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav id="main-nav">
+                <a href="index.html">Generador</a>
+                <a href="guide.html" class="active">Guía de Uso</a>
+                <a href="faq.html">Preguntas Frecuentes</a>
+                <a href="about.html">Acerca de</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="content-page">
+            <div class="container">
+                <h1><i class="fa-solid fa-book"></i> Guía de Uso</h1>
+                <p class="subtitle">Aprende a crear códigos QR personalizados en minutos</p>
+
+                <div class="guide-section">
+                    <h2><i class="fa-solid fa-1"></i> Selecciona el Tipo de QR</h2>
+                    <p>Prince QR Generator ofrece 5 tipos diferentes de códigos QR:</p>
+                    <ul>
+                        <li><strong>URL:</strong> Para enlaces web o texto simple</li>
+                        <li><strong>WiFi:</strong> Comparte tu red WiFi sin revelar la contraseña manualmente</li>
+                        <li><strong>vCard:</strong> Tarjeta de contacto digital con nombre, teléfono, email y más</li>
+                        <li><strong>Email:</strong> Genera un correo prellenado con destinatario, asunto y mensaje</li>
+                        <li><strong>SMS:</strong> Crea un mensaje de texto prellenado</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h2><i class="fa-solid fa-2"></i> Ingresa la Información</h2>
+                    <p>Completa los campos según el tipo de QR seleccionado:</p>
+                    <ul>
+                        <li>Para <strong>URL</strong>: Escribe la dirección web completa (ej: https://ejemplo.com)</li>
+                        <li>Para <strong>WiFi</strong>: Nombre de red, contraseña y tipo de seguridad</li>
+                        <li>Para <strong>vCard</strong>: Datos de contacto completos</li>
+                        <li>Para <strong>Email/SMS</strong>: Destinatario y mensaje</li>
+                    </ul>
+                    <div class="tip-box">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <strong>Tip:</strong> El QR se actualiza automáticamente mientras escribes
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h2><i class="fa-solid fa-3"></i> Personaliza los Colores</h2>
+                    <p>Haz que tu QR coincida con tu marca:</p>
+                    <ul>
+                        <li><strong>Color de Puntos:</strong> Los puntos internos del QR</li>
+                        <li><strong>Color de Fondo:</strong> El fondo del código</li>
+                        <li><strong>Color de Esquinas:</strong> Los tres cuadrados de las esquinas</li>
+                    </ul>
+                    <p>También puedes usar los <strong>temas predefinidos</strong> (Clásico, Prince, Dark) para aplicar
+                        combinaciones profesionales con un solo clic.</p>
+                    <div class="warning-box">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <strong>Importante:</strong> Asegúrate de que haya suficiente contraste entre el fondo y los
+                        puntos para que el QR sea legible
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h2><i class="fa-solid fa-4"></i> Elige las Formas</h2>
+                    <p>Cambia el estilo visual de tu código QR:</p>
+                    <ul>
+                        <li><strong>Estilo de Puntos:</strong> Cuadrado, Puntos, Redondeado, Muy Redondeado, Elegante
+                        </li>
+                        <li><strong>Estilo de Esquinas:</strong> Cuadrado, Punto, Redondeado</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h2><i class="fa-solid fa-5"></i> Agrega un Logo (Opcional)</h2>
+                    <p>Personaliza tu QR con tu logo o imagen:</p>
+                    <ul>
+                        <li>Haz clic en "Subir Logo" y selecciona una imagen PNG, JPG o SVG</li>
+                        <li>El logo aparecerá en el centro del código QR</li>
+                        <li>Mantén activada la opción "Ocultar puntos detrás del logo" para mejor legibilidad</li>
+                        <li>Puedes eliminar el logo en cualquier momento</li>
+                    </ul>
+                    <div class="tip-box">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <strong>Tip:</strong> Usa logos con fondo transparente (PNG) para mejores resultados
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h2><i class="fa-solid fa-6"></i> Descarga tu QR</h2>
+                    <p>Cuando estés satisfecho con tu diseño:</p>
+                    <ol>
+                        <li>Selecciona el <strong>tamaño de exportación</strong> (256px a 2048px)</li>
+                        <li>Elige el formato:
+                            <ul>
+                                <li><strong>PNG:</strong> Ideal para web y redes sociales</li>
+                                <li><strong>SVG:</strong> Perfecto para impresión y diseño profesional (escalable sin
+                                    pérdida de calidad)</li>
+                            </ul>
+                        </li>
+                        <li>Haz clic en el botón de descarga correspondiente</li>
+                    </ol>
+                    <p>Tu QR se guardará automáticamente en el <strong>historial</strong> para que puedas reutilizarlo
+                        después.</p>
+                </div>
+
+                <div class="guide-section">
+                    <h2><i class="fa-solid fa-clock-rotate-left"></i> Usa el Historial</h2>
+                    <p>El historial guarda automáticamente todos los QR que descargas:</p>
+                    <ul>
+                        <li>Haz clic en cualquier QR del historial para restaurar su configuración completa</li>
+                        <li>Se guardan hasta 20 códigos QR</li>
+                        <li>Puedes eliminar QRs individuales o limpiar todo el historial</li>
+                        <li>El historial se guarda en tu navegador (no requiere cuenta)</li>
+                    </ul>
+                </div>
+
+                <div class="cta-box">
+                    <h3>¿Listo para crear tu primer QR?</h3>
+                    <a href="index.html" class="btn btn-primary">
+                        <i class="fa-solid fa-arrow-right"></i> Ir al Generador
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Prince QR Generator. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mainNav = document.getElementById('main-nav');
+
+        if (mobileMenuToggle && mainNav) {
+            mobileMenuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (mainNav.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+
+            // Close menu when clicking on a link
+            const navLinks = mainNav.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mainNav.classList.remove('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
