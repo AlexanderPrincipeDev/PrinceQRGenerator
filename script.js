@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const dotsTypeSelect = document.getElementById('dots-type');
     const cornersTypeSelect = document.getElementById('corners-type');
 
+    // Logo Inputs
+    const logoInput = document.getElementById('logo-input');
+    const clearLogoBtn = document.getElementById('clear-logo-btn');
+    const logoHideBgCheckbox = document.getElementById('logo-hide-bg');
+
     // Buttons
     const downloadPngBtn = document.getElementById('download-png');
     const downloadSvgBtn = document.getElementById('download-svg');
@@ -53,7 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         imageOptions: {
             crossOrigin: "anonymous",
-            margin: 20
+            margin: 10,
+            imageSize: 0.4,
+            hideBackgroundDots: true
         }
     });
 
@@ -65,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateQR() {
         qrCode.update({
             data: urlInput.value || "https://princeqr.com",
+            image: currentLogo,
             dotsOptions: {
                 color: dotsColorInput.value,
                 type: dotsTypeSelect.value
@@ -76,10 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 color: cornersColorInput.value,
                 type: cornersTypeSelect.value
             },
-            // Note: For full consistency, we should also update cornersDotOptions if we want them to match the square color
             cornersDotOptions: {
                 color: cornersColorInput.value,
-                type: cornersTypeSelect.value === 'square' ? 'square' : 'dot' // simplified mapping
+                type: cornersTypeSelect.value === 'square' ? 'square' : 'dot'
+            },
+            imageOptions: {
+                hideBackgroundDots: logoHideBgCheckbox.checked
             }
         });
     }
@@ -117,6 +127,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Shapes
     dotsTypeSelect.addEventListener('change', updateQR);
     cornersTypeSelect.addEventListener('change', updateQR);
+
+    // Logo
+    logoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentLogo = e.target.result;
+                updateQR();
+                clearLogoBtn.style.display = 'inline-flex';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    clearLogoBtn.addEventListener('click', () => {
+        currentLogo = "";
+        logoInput.value = "";
+        updateQR();
+        clearLogoBtn.style.display = 'none';
+    });
+
+    logoHideBgCheckbox.addEventListener('change', updateQR);
 
     // Presets / Themes
     themeBtns.forEach(btn => {

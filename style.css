@@ -448,6 +448,51 @@ input[type="color"]::-webkit-color-swatch {
     color: var(--primary-dark);
 }
 
+/* Logo Options */
+.logo-upload-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+input[type="file"] {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    border: none;
+    background: var(--primary-dark);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: #152039;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    width: auto;
+    align-self: flex-start;
+}
+
 /* Footer */
 footer {
     background: var(--primary-dark);
