@@ -67,6 +67,15 @@
                             <button class="type-tab" data-type="sms">
                                 <i class="fa-solid fa-comment-sms"></i> SMS
                             </button>
+                            <button class="type-tab" data-type="whatsapp">
+                                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="type-tab" data-type="text">
+                                <i class="fa-solid fa-align-left"></i> Texto
+                            </button>
+                            <button class="type-tab" data-type="event">
+                                <i class="fa-solid fa-calendar-days"></i> Evento
+                            </button>
                         </div>
                     </div>
 
@@ -156,6 +165,51 @@
                         </div>
                     </div>
 
+                    <!-- WhatsApp Form -->
+                    <div class="qr-form" id="form-whatsapp" style="display: none;">
+                        <div class="input-group">
+                            <label for="whatsapp-phone"><i class="fa-brands fa-whatsapp"></i> Número de WhatsApp</label>
+                            <input type="tel" id="whatsapp-phone" placeholder="+51 999 999 999">
+                        </div>
+                        <div class="input-group">
+                            <label for="whatsapp-message"><i class="fa-solid fa-comment"></i> Mensaje</label>
+                            <textarea id="whatsapp-message" rows="3"
+                                placeholder="Hola, quisiera más información..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Text Form -->
+                    <div class="qr-form" id="form-text" style="display: none;">
+                        <div class="input-group">
+                            <label for="text-content"><i class="fa-solid fa-align-left"></i> Contenido de Texto</label>
+                            <textarea id="text-content" rows="5" placeholder="Escribe tu texto aquí..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Event Form -->
+                    <div class="qr-form" id="form-event" style="display: none;">
+                        <div class="input-group">
+                            <label for="event-title"><i class="fa-solid fa-heading"></i> Título del Evento</label>
+                            <input type="text" id="event-title" placeholder="Reunión de Equipo">
+                        </div>
+                        <div class="input-group">
+                            <label for="event-location"><i class="fa-solid fa-location-dot"></i> Ubicación</label>
+                            <input type="text" id="event-location" placeholder="Oficina 301 / Zoom">
+                        </div>
+                        <div class="input-group">
+                            <label for="event-start"><i class="fa-solid fa-clock"></i> Inicio</label>
+                            <input type="datetime-local" id="event-start">
+                        </div>
+                        <div class="input-group">
+                            <label for="event-end"><i class="fa-solid fa-clock"></i> Fin</label>
+                            <input type="datetime-local" id="event-end">
+                        </div>
+                        <div class="input-group">
+                            <label for="event-description"><i class="fa-solid fa-align-left"></i> Descripción</label>
+                            <textarea id="event-description" rows="3" placeholder="Detalles del evento..."></textarea>
+                        </div>
+                    </div>
+
                     <div class="accordion">
                         <!-- Colors -->
                         <div class="accordion-item">
@@ -165,17 +219,80 @@
                             </button>
                             <div class="accordion-content open">
                                 <div class="color-picker-group">
-                                    <label>Color de Puntos (Dots)</label>
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                        <label>Color de Puntos (Dots)</label>
+                                        <label class="checkbox-container" style="font-size: 0.8rem;">
+                                            <input type="checkbox" id="dots-gradient-check"> Degradado
+                                        </label>
+                                    </div>
                                     <div class="color-inputs">
                                         <input type="color" id="dots-color" value="#000000">
                                         <input type="text" class="hex-input" id="dots-color-hex" value="#000000">
                                     </div>
+
+                                    <!-- Gradient Options for Dots -->
+                                    <div id="dots-gradient-options" class="gradient-options-box">
+                                        <label style="font-size: 0.8rem;">Color 2:</label>
+                                        <div class="color-inputs" style="margin-bottom: 10px;">
+                                            <input type="color" id="dots-color2" value="#000000">
+                                            <input type="text" class="hex-input" id="dots-color2-hex" value="#000000">
+                                        </div>
+                                        <div class="gradient-row">
+                                            <div>
+                                                <label style="font-size: 0.8rem;">Tipo:</label>
+                                                <select id="dots-gradient-type"
+                                                    style="width: 100%; padding: 5px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #cbd5e1;">
+                                                    <option value="linear">Lineal</option>
+                                                    <option value="radial">Radial</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label style="font-size: 0.8rem;">Rotación (°):</label>
+                                                <input type="number" id="dots-gradient-rotation" value="0" min="0"
+                                                    max="360"
+                                                    style="width: 100%; padding: 5px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #cbd5e1;">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
                                 <div class="color-picker-group">
-                                    <label>Color de Fondo</label>
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                        <label>Color de Fondo</label>
+                                        <label class="checkbox-container" style="font-size: 0.8rem;">
+                                            <input type="checkbox" id="bg-gradient-check"> Degradado
+                                        </label>
+                                    </div>
                                     <div class="color-inputs">
                                         <input type="color" id="bg-color" value="#ffffff">
                                         <input type="text" class="hex-input" id="bg-color-hex" value="#ffffff">
+                                    </div>
+
+                                    <!-- Gradient Options for BG -->
+                                    <div id="bg-gradient-options" class="gradient-options-box">
+                                        <label style="font-size: 0.8rem;">Color 2:</label>
+                                        <div class="color-inputs" style="margin-bottom: 10px;">
+                                            <input type="color" id="bg-color2" value="#ffffff">
+                                            <input type="text" class="hex-input" id="bg-color2-hex" value="#ffffff">
+                                        </div>
+                                        <div class="gradient-row">
+                                            <div>
+                                                <label style="font-size: 0.8rem;">Tipo:</label>
+                                                <select id="bg-gradient-type"
+                                                    style="width: 100%; padding: 5px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #cbd5e1;">
+                                                    <option value="linear">Lineal</option>
+                                                    <option value="radial">Radial</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label style="font-size: 0.8rem;">Rotación (°):</label>
+                                                <input type="number" id="bg-gradient-rotation" value="0" min="0"
+                                                    max="360"
+                                                    style="width: 100%; padding: 5px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #cbd5e1;">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="color-picker-group">
@@ -308,7 +425,9 @@
                         <button id="download-png" class="btn btn-primary"><i class="fa-solid fa-download"></i> Descargar
                             PNG</button>
                         <button id="download-svg" class="btn btn-secondary"><i class="fa-solid fa-file-code"></i>
-                            Descargar SVG</button>
+                            SVG</button>
+                        <button id="share-btn" class="btn btn-secondary" style="display: none;"><i
+                                class="fa-solid fa-share-nodes"></i></button>
                     </div>
                 </div>
             </div>
@@ -342,6 +461,14 @@
     <footer>
         <div class="container">
             <p>&copy; 2026 Prince QR Generator. Todos los derechos reservados.</p>
+            <div class="dev-credit-badge"
+                style="margin: 0.9rem auto 0; width: fit-content; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.55rem 1.1rem; border-radius: 999px; background: #f8fafc; color: #0f172a; font-size: 0.95rem; font-weight: 700; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.1); border: 1px solid rgba(148, 163, 184, 0.35); text-align: center;">
+                <span style="text-transform: uppercase; letter-spacing: 0.6px; font-size: 0.68rem; opacity: 0.7;">Web
+                    creada por</span>
+                <a href="https://prince-code-labs.vercel.app/" target="_blank" rel="noopener noreferrer"
+                    style="color: #0f172a; text-decoration: none; font-weight: 800; border-bottom: 2px solid rgba(15, 23, 42, 0.35);">Prince
+                    Code Labs</a>
+            </div>
         </div>
     </footer>
 

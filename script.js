@@ -15,10 +15,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrCanvasContainer = document.getElementById('canvas');
 
     // Color Inputs
+    // Color Inputs - Dots
     const dotsColorInput = document.getElementById('dots-color');
     const dotsColorHex = document.getElementById('dots-color-hex');
+    const dotsGradientCheck = document.getElementById('dots-gradient-check');
+    const dotsGradientOptions = document.getElementById('dots-gradient-options');
+    const dotsColor2Input = document.getElementById('dots-color2');
+    const dotsColor2Hex = document.getElementById('dots-color2-hex');
+    const dotsGradientType = document.getElementById('dots-gradient-type');
+    const dotsGradientRotation = document.getElementById('dots-gradient-rotation');
+
+    // Color Inputs - Background
     const bgColorInput = document.getElementById('bg-color');
     const bgColorHex = document.getElementById('bg-color-hex');
+    const bgGradientCheck = document.getElementById('bg-gradient-check');
+    const bgGradientOptions = document.getElementById('bg-gradient-options');
+    const bgColor2Input = document.getElementById('bg-color2');
+    const bgColor2Hex = document.getElementById('bg-color2-hex');
+    const bgGradientType = document.getElementById('bg-gradient-type');
+    const bgGradientRotation = document.getElementById('bg-gradient-rotation');
+
+    // Color Inputs - Corners
     const cornersColorInput = document.getElementById('corners-square-color');
     const cornersColorHex = document.getElementById('corners-square-color-hex');
 
@@ -34,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Buttons
     const downloadPngBtn = document.getElementById('download-png');
     const downloadSvgBtn = document.getElementById('download-svg');
+    const shareBtn = document.getElementById('share-btn');
     const accordionHeaders = document.querySelectorAll('.accordion-header');
     const themeBtns = document.querySelectorAll('.theme-btn');
 
@@ -62,6 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // SMS inputs
     const smsPhone = document.getElementById('sms-phone');
     const smsMessage = document.getElementById('sms-message');
+
+    // WhatsApp inputs
+    const whatsappPhone = document.getElementById('whatsapp-phone');
+    const whatsappMessage = document.getElementById('whatsapp-message');
+
+    // Text inputs
+    const textContent = document.getElementById('text-content');
+
+    // Event inputs
+    const eventTitle = document.getElementById('event-title');
+    const eventLocation = document.getElementById('event-location');
+    const eventStart = document.getElementById('event-start');
+    const eventEnd = document.getElementById('event-end');
+    const eventDescription = document.getElementById('event-description');
 
     // --- State ---
     let currentType = 'url';
@@ -111,19 +143,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Functions ---
 
     function updateQR() {
-        qrCode.update({
+        const qrOptions = {
             data: getQRData(),
             image: currentLogo,
             qrOptions: {
-                errorCorrectionLevel: "H" // Fixed high level for better reliability with logos
+                errorCorrectionLevel: "H"
             },
             dotsOptions: {
-                color: dotsColorInput.value,
                 type: dotsTypeSelect.value
             },
-            backgroundOptions: {
-                color: bgColorInput.value,
-            },
+            backgroundOptions: {},
             cornersSquareOptions: {
                 color: cornersColorInput.value,
                 type: cornersTypeSelect.value
@@ -135,7 +164,42 @@ document.addEventListener('DOMContentLoaded', () => {
             imageOptions: {
                 hideBackgroundDots: logoHideBgCheckbox.checked
             }
-        });
+        };
+
+        // Dots Color / Gradient Logic
+        if (dotsGradientCheck.checked) {
+            qrOptions.dotsOptions.gradient = {
+                type: dotsGradientType.value,
+                rotation: parseInt(dotsGradientRotation.value) * (Math.PI / 180), // Convert to radians if needed, or check lib docs. Lib takes radians usually? Docs say 'rotation' in number. Assuming radians or degrees?
+                // Actually qr-code-styling usually takes rotation in radians for gradient. Let's check docs or safe bet. 
+                // Correction: The library usually takes Radians. 0-2PI.
+                // Wait, standard CSS is degrees. Let's try sending it as is first, or standard conversion.
+                // Reading docs for qr-code-styling: "rotation: number" (in radians).
+                rotation: (parseInt(dotsGradientRotation.value) || 0) * (Math.PI / 180),
+                colorStops: [
+                    { offset: 0, color: dotsColorInput.value },
+                    { offset: 1, color: dotsColor2Input.value }
+                ]
+            };
+        } else {
+            qrOptions.dotsOptions.color = dotsColorInput.value;
+        }
+
+        // Background Color / Gradient Logic
+        if (bgGradientCheck.checked) {
+            qrOptions.backgroundOptions.gradient = {
+                type: bgGradientType.value,
+                rotation: (parseInt(bgGradientRotation.value) || 0) * (Math.PI / 180),
+                colorStops: [
+                    { offset: 0, color: bgColorInput.value },
+                    { offset: 1, color: bgColor2Input.value }
+                ]
+            };
+        } else {
+            qrOptions.backgroundOptions.color = bgColorInput.value;
+        }
+
+        qrCode.update(qrOptions);
     }
 
     function syncHexToColor(hexInput, colorInput) {
@@ -183,6 +247,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 const smsNum = smsPhone.value || "";
                 const msg = encodeURIComponent(smsMessage.value || "");
                 return `sms:${smsNum}?body=${msg}`;
+
+            case 'whatsapp':
+                let waNum = whatsappPhone.value || "";
+                // Cleanup number: remove +, space, -, (, )
+                waNum = waNum.replace(/[\+\s\-\(\)]/g, "");
+                const waMsg = encodeURIComponent(whatsappMessage.value || "");
+                return `https://wa.me/${waNum}?text=${waMsg}`;
+
+            case 'text':
+                return textContent.value || "Prince QR Generator";
+
+            case 'event':
+                const title = eventTitle.value || "Evento";
+                const loc = eventLocation.value || "";
+                const desc = eventDescription.value || "";
+
+                // Format dates to YYYYMMDDTHHmmSSZ
+                const formatDate = (dateInput) => {
+                    if (!dateInput.value) return "";
+                    const d = new Date(dateInput.value);
+                    return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+                };
+
+                const start = formatDate(eventStart);
+                const end = formatDate(eventEnd);
+
+                return `BEGIN:VEVENT\nSUMMARY:${title}\nLOCATION:${loc}\nDESCRIPTION:${desc}\nDTSTART:${start}\nDTEND:${end}\nEND:VEVENT`;
 
             default:
                 return urlInput.value || "https://princeqr.com";
@@ -365,12 +456,48 @@ document.addEventListener('DOMContentLoaded', () => {
     smsPhone.addEventListener('input', updateQR);
     smsMessage.addEventListener('input', updateQR);
 
+    // WhatsApp inputs
+    whatsappPhone.addEventListener('input', updateQR);
+    whatsappMessage.addEventListener('input', updateQR);
+
+    // Text inputs
+    textContent.addEventListener('input', updateQR);
+
+    // Event inputs
+    eventTitle.addEventListener('input', updateQR);
+    eventLocation.addEventListener('input', updateQR);
+    eventStart.addEventListener('change', updateQR);
+    eventEnd.addEventListener('change', updateQR);
+    eventDescription.addEventListener('input', updateQR);
+
     // Colors
+    // Colors - Logic
     dotsColorInput.addEventListener('input', () => syncColorToHex(dotsColorInput, dotsColorHex));
     dotsColorHex.addEventListener('input', () => syncHexToColor(dotsColorHex, dotsColorInput));
 
+    // Gradient Dots Listeners
+    dotsGradientCheck.addEventListener('change', () => {
+        dotsGradientOptions.style.display = dotsGradientCheck.checked ? 'block' : 'none';
+        updateQR();
+    });
+    dotsColor2Input.addEventListener('input', () => syncColorToHex(dotsColor2Input, dotsColor2Hex));
+    dotsColor2Hex.addEventListener('input', () => syncHexToColor(dotsColor2Hex, dotsColor2Input));
+    dotsGradientType.addEventListener('change', updateQR);
+    dotsGradientRotation.addEventListener('input', updateQR);
+
+    // BG Colors
     bgColorInput.addEventListener('input', () => syncColorToHex(bgColorInput, bgColorHex));
     bgColorHex.addEventListener('input', () => syncHexToColor(bgColorHex, bgColorInput));
+
+    // Gradient BG Listeners
+    bgGradientCheck.addEventListener('change', () => {
+        bgGradientOptions.style.display = bgGradientCheck.checked ? 'block' : 'none';
+        updateQR();
+    });
+    bgColor2Input.addEventListener('input', () => syncColorToHex(bgColor2Input, bgColor2Hex));
+    bgColor2Hex.addEventListener('input', () => syncHexToColor(bgColor2Hex, bgColor2Input));
+    bgGradientType.addEventListener('change', updateQR);
+    bgGradientRotation.addEventListener('input', updateQR);
 
     cornersColorInput.addEventListener('input', () => syncColorToHex(cornersColorInput, cornersColorHex));
     cornersColorHex.addEventListener('input', () => syncHexToColor(cornersColorHex, cornersColorInput));
@@ -463,7 +590,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     });
 
+    // Share Button Logic
+    if (navigator.share) {
+        shareBtn.style.display = 'flex';
+        shareBtn.addEventListener('click', async () => {
+            // Generate Blob
+            const size = 1024; // Good quality for sharing
+            qrCode.update({ width: size, height: size });
 
+            // Wait for update
+            setTimeout(async () => {
+                try {
+                    const blob = await qrCode.getRawData('png');
+                    if (blob) {
+                        const file = new File([blob], "prince-qr.png", { type: "image/png" });
+                        await navigator.share({
+                            title: 'Mi Código QR',
+                            text: 'Generado con Prince QR Generator',
+                            files: [file]
+                        });
+                    }
+                } catch (err) {
+                    console.error('Error sharing:', err);
+                } finally {
+                    qrCode.update({ width: 300, height: 300 }); // Reset preview
+                }
+            }, 100);
+        });
+    }
 
     // History
     clearHistoryBtn.addEventListener('click', clearAllHistory);
