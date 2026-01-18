@@ -52,9 +52,112 @@
                 <!-- Controls Side -->
                 <div class="controls-panel">
 
-                    <div class="input-group">
-                        <label for="url-input"><i class="fa-solid fa-link"></i> Contenido (URL o Texto)</label>
-                        <input type="text" id="url-input" placeholder="https://ejemplo.com" value="">
+                    <!-- QR Type Selector -->
+                    <div class="qr-type-selector">
+                        <label>Tipo de QR:</label>
+                        <div class="type-tabs">
+                            <button class="type-tab active" data-type="url">
+                                <i class="fa-solid fa-link"></i> URL
+                            </button>
+                            <button class="type-tab" data-type="wifi">
+                                <i class="fa-solid fa-wifi"></i> WiFi
+                            </button>
+                            <button class="type-tab" data-type="vcard">
+                                <i class="fa-solid fa-address-card"></i> vCard
+                            </button>
+                            <button class="type-tab" data-type="email">
+                                <i class="fa-solid fa-envelope"></i> Email
+                            </button>
+                            <button class="type-tab" data-type="sms">
+                                <i class="fa-solid fa-comment-sms"></i> SMS
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- URL Form -->
+                    <div class="qr-form" id="form-url">
+                        <div class="input-group">
+                            <label for="url-input"><i class="fa-solid fa-link"></i> URL o Texto</label>
+                            <input type="text" id="url-input" placeholder="https://ejemplo.com" value="">
+                        </div>
+                    </div>
+
+                    <!-- WiFi Form -->
+                    <div class="qr-form" id="form-wifi" style="display: none;">
+                        <div class="input-group">
+                            <label for="wifi-ssid"><i class="fa-solid fa-wifi"></i> Nombre de Red (SSID)</label>
+                            <input type="text" id="wifi-ssid" placeholder="Mi WiFi">
+                        </div>
+                        <div class="input-group">
+                            <label for="wifi-password"><i class="fa-solid fa-key"></i> Contraseña</label>
+                            <input type="text" id="wifi-password" placeholder="contraseña123">
+                        </div>
+                        <div class="input-group">
+                            <label for="wifi-security"><i class="fa-solid fa-shield"></i> Tipo de Seguridad</label>
+                            <select id="wifi-security">
+                                <option value="WPA">WPA/WPA2</option>
+                                <option value="WEP">WEP</option>
+                                <option value="nopass">Sin contraseña</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="wifi-hidden">
+                                Red oculta
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- vCard Form -->
+                    <div class="qr-form" id="form-vcard" style="display: none;">
+                        <div class="input-group">
+                            <label for="vcard-name"><i class="fa-solid fa-user"></i> Nombre Completo</label>
+                            <input type="text" id="vcard-name" placeholder="Juan Pérez">
+                        </div>
+                        <div class="input-group">
+                            <label for="vcard-org"><i class="fa-solid fa-building"></i> Empresa</label>
+                            <input type="text" id="vcard-org" placeholder="Mi Empresa S.A.">
+                        </div>
+                        <div class="input-group">
+                            <label for="vcard-phone"><i class="fa-solid fa-phone"></i> Teléfono</label>
+                            <input type="tel" id="vcard-phone" placeholder="+51 999 999 999">
+                        </div>
+                        <div class="input-group">
+                            <label for="vcard-email"><i class="fa-solid fa-envelope"></i> Email</label>
+                            <input type="email" id="vcard-email" placeholder="correo@ejemplo.com">
+                        </div>
+                        <div class="input-group">
+                            <label for="vcard-url"><i class="fa-solid fa-globe"></i> Sitio Web</label>
+                            <input type="url" id="vcard-url" placeholder="https://ejemplo.com">
+                        </div>
+                    </div>
+
+                    <!-- Email Form -->
+                    <div class="qr-form" id="form-email" style="display: none;">
+                        <div class="input-group">
+                            <label for="email-to"><i class="fa-solid fa-envelope"></i> Destinatario</label>
+                            <input type="email" id="email-to" placeholder="destinatario@ejemplo.com">
+                        </div>
+                        <div class="input-group">
+                            <label for="email-subject"><i class="fa-solid fa-heading"></i> Asunto</label>
+                            <input type="text" id="email-subject" placeholder="Asunto del correo">
+                        </div>
+                        <div class="input-group">
+                            <label for="email-body"><i class="fa-solid fa-align-left"></i> Mensaje</label>
+                            <textarea id="email-body" rows="3" placeholder="Escribe tu mensaje aquí..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- SMS Form -->
+                    <div class="qr-form" id="form-sms" style="display: none;">
+                        <div class="input-group">
+                            <label for="sms-phone"><i class="fa-solid fa-phone"></i> Número de Teléfono</label>
+                            <input type="tel" id="sms-phone" placeholder="+51 999 999 999">
+                        </div>
+                        <div class="input-group">
+                            <label for="sms-message"><i class="fa-solid fa-comment"></i> Mensaje</label>
+                            <textarea id="sms-message" rows="3" placeholder="Escribe tu mensaje aquí..."></textarea>
+                        </div>
                     </div>
 
                     <div class="accordion">
@@ -161,6 +264,27 @@
                             </div>
                         </div>
 
+                        <!-- Historial -->
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span><i class="fa-solid fa-clock-rotate-left"></i> Historial</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="history-header">
+                                    <p class="history-count">0 QRs guardados</p>
+                                    <button id="clear-history-btn" class="btn btn-secondary btn-sm"
+                                        style="display: none;">
+                                        <i class="fa-solid fa-trash"></i> Limpiar Todo
+                                    </button>
+                                </div>
+                                <div id="history-grid" class="history-grid">
+                                    <p class="empty-history">No hay QRs guardados aún. Los QRs se guardan
+                                        automáticamente al generarlos.</p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -170,6 +294,29 @@
                     <div class="qr-canvas-container" id="canvas">
                         <!-- QR Code renders here -->
                     </div>
+
+                    <!-- QR Options -->
+                    <div class="qr-options">
+                        <div class="qr-option-group">
+                            <label for="qr-size">Tamaño de Exportación:</label>
+                            <select id="qr-size">
+                                <option value="256">256x256 px</option>
+                                <option value="512">512x512 px</option>
+                                <option value="1024" selected>1024x1024 px</option>
+                                <option value="2048">2048x2048 px</option>
+                            </select>
+                        </div>
+                        <div class="qr-option-group">
+                            <label for="error-correction">Corrección de Errores:</label>
+                            <select id="error-correction" title="Mayor corrección = más resistente a daños">
+                                <option value="L">L - Baja (7%)</option>
+                                <option value="M" selected>M - Media (15%)</option>
+                                <option value="Q">Q - Alta (25%)</option>
+                                <option value="H">H - Muy Alta (30%)</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="download-buttons">
                         <button id="download-png" class="btn btn-primary"><i class="fa-solid fa-download"></i> Descargar
                             PNG</button>
