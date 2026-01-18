@@ -1,19 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // --- Configuration ---
     let qrText = "https://princeqr.com";
-    
+
     // Default Prince Palette
     const defaultColors = {
-        dots: "#1C2B4B",
+        dots: "#000000",
         bg: "#ffffff",
-        corners: "#1399AB"
+        corners: "#000000"
     };
 
     // --- DOM Elements ---
     const urlInput = document.getElementById('url-input');
     const qrCanvasContainer = document.getElementById('canvas');
-    
+
     // Color Inputs
     const dotsColorInput = document.getElementById('dots-color');
     const dotsColorHex = document.getElementById('dots-color-hex');
@@ -21,18 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgColorHex = document.getElementById('bg-color-hex');
     const cornersColorInput = document.getElementById('corners-square-color');
     const cornersColorHex = document.getElementById('corners-square-color-hex');
-    
+
     // Shape Inputs
     const dotsTypeSelect = document.getElementById('dots-type');
     const cornersTypeSelect = document.getElementById('corners-type');
-    
+
     // Buttons
     const downloadPngBtn = document.getElementById('download-png');
     const downloadSvgBtn = document.getElementById('download-svg');
     const accordionHeaders = document.querySelectorAll('.accordion-header');
-    const colorPresets = document.querySelectorAll('.color-preset');
+    const themeBtns = document.querySelectorAll('.theme-btn');
 
     // --- Initialization ---
+    let currentLogo = ""; // Store current logo data URL
     const qrCode = new QRCodeStyling({
         width: 300,
         height: 300,
@@ -60,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     qrCode.append(qrCanvasContainer);
 
     // --- Functions ---
-    
+
     function updateQR() {
         qrCode.update({
             data: urlInput.value || "https://princeqr.com",
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             cornersSquareOptions: {
                 color: cornersColorInput.value,
-                type: cornersTypeSelect.value 
+                type: cornersTypeSelect.value
             },
             // Note: For full consistency, we should also update cornersDotOptions if we want them to match the square color
             cornersDotOptions: {
@@ -117,16 +118,23 @@ document.addEventListener('DOMContentLoaded', () => {
     dotsTypeSelect.addEventListener('change', updateQR);
     cornersTypeSelect.addEventListener('change', updateQR);
 
-    // Presets
-    colorPresets.forEach(btn => {
+    // Presets / Themes
+    themeBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            const color = e.target.dataset.color;
-            // Apply preset to Dots & Corners for a quick theme match, keep BG white
-            dotsColorInput.value = color;
-            dotsColorHex.value = color;
-            
-            // Just for variety, let's keep corners same or complimentary. 
-            // For simplicity, let's set dots to the preset.
+            const dots = btn.dataset.dots;
+            const bg = btn.dataset.bg;
+            const corners = btn.dataset.corners;
+
+            // Update Inputs
+            dotsColorInput.value = dots;
+            dotsColorHex.value = dots;
+
+            bgColorInput.value = bg;
+            bgColorHex.value = bg;
+
+            cornersColorInput.value = corners;
+            cornersColorHex.value = corners;
+
             updateQR();
         });
     });
@@ -135,14 +143,14 @@ document.addEventListener('DOMContentLoaded', () => {
     accordionHeaders.forEach(header => {
         header.addEventListener('click', () => {
             const content = header.nextElementSibling;
-            
+
             // Toggle current
             header.classList.toggle('active');
             content.classList.toggle('open');
-            
+
             // Rotate icon
             const icon = header.querySelector('.fa-chevron-down');
-            if(content.classList.contains('open')){
+            if (content.classList.contains('open')) {
                 icon.style.transform = 'rotate(180deg)';
             } else {
                 icon.style.transform = 'rotate(0deg)';

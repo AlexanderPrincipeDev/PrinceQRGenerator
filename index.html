@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prince QR Generator | Generador de Códigos QR Profesional</title>
-    <meta name="description" content="Genera códigos QR personalizados y profesionales con Prince QR Generator. Añade colores, logos y descarga en alta calidad.">
-    
+    <meta name="description"
+        content="Genera códigos QR personalizados y profesionales con Prince QR Generator. Añade colores, logos y descarga en alta calidad.">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
-    
+
     <!-- QR Code Styling Library -->
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-    
+
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <div class="container header-content">
@@ -48,10 +51,10 @@
             <div class="generator-wrapper">
                 <!-- Controls Side -->
                 <div class="controls-panel">
-                    
+
                     <div class="input-group">
                         <label for="url-input"><i class="fa-solid fa-link"></i> Contenido (URL o Texto)</label>
-                        <input type="text" id="url-input" placeholder="https://ejemplo.com" value="https://princeqr.com">
+                        <input type="text" id="url-input" placeholder="https://ejemplo.com" value="">
                     </div>
 
                     <div class="accordion">
@@ -65,8 +68,8 @@
                                 <div class="color-picker-group">
                                     <label>Color de Puntos (Dots)</label>
                                     <div class="color-inputs">
-                                        <input type="color" id="dots-color" value="#1C2B4B">
-                                        <input type="text" class="hex-input" id="dots-color-hex" value="#1C2B4B">
+                                        <input type="color" id="dots-color" value="#000000">
+                                        <input type="text" class="hex-input" id="dots-color-hex" value="#000000">
                                     </div>
                                 </div>
                                 <div class="color-picker-group">
@@ -79,16 +82,28 @@
                                 <div class="color-picker-group">
                                     <label>Color de Esquinas (Cuadrados)</label>
                                     <div class="color-inputs">
-                                        <input type="color" id="corners-square-color" value="#1399AB">
-                                        <input type="text" class="hex-input" id="corners-square-color-hex" value="#1399AB">
+                                        <input type="color" id="corners-square-color" value="#000000">
+                                        <input type="text" class="hex-input" id="corners-square-color-hex"
+                                            value="#000000">
                                     </div>
                                 </div>
-                                
+
                                 <div class="preset-colors">
-                                    <p>Presets Prince:</p>
-                                    <button class="color-preset" style="background: #1C2B4B" data-color="#1C2B4B" title="Prince Dark"></button>
-                                    <button class="color-preset" style="background: #1399AB" data-color="#1399AB" title="Prince Teal"></button>
-                                    <button class="color-preset" style="background: #E0F1F5" data-color="#E0F1F5" title="Prince Light"></button>
+                                    <p>Temas:</p>
+                                    <div class="themes-grid">
+                                        <button class="theme-btn" data-dots="#000000" data-bg="#ffffff"
+                                            data-corners="#000000">
+                                            <span class="dot" style="background:#000;"></span> Clásico
+                                        </button>
+                                        <button class="theme-btn" data-dots="#1C2B4B" data-bg="#E0F1F5"
+                                            data-corners="#1399AB">
+                                            <span class="dot" style="background:#1C2B4B;"></span> Prince
+                                        </button>
+                                        <button class="theme-btn" data-dots="#ffffff" data-bg="#1C2B4B"
+                                            data-corners="#1399AB">
+                                            <span class="dot" style="background:#1399AB;"></span> Dark
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -131,13 +146,15 @@
                         <!-- QR Code renders here -->
                     </div>
                     <div class="download-buttons">
-                        <button id="download-png" class="btn btn-primary"><i class="fa-solid fa-download"></i> Descargar PNG</button>
-                        <button id="download-svg" class="btn btn-secondary"><i class="fa-solid fa-file-code"></i> Descargar SVG</button>
+                        <button id="download-png" class="btn btn-primary"><i class="fa-solid fa-download"></i> Descargar
+                            PNG</button>
+                        <button id="download-svg" class="btn btn-secondary"><i class="fa-solid fa-file-code"></i>
+                            Descargar SVG</button>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         <section class="info-section">
             <div class="container">
                 <h2>¿Por qué elegir Prince QR?</h2>
@@ -171,4 +188,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
