@@ -18,6 +18,12 @@
 
     <!-- QR Code Styling Library -->
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <!-- HTML5-QRCode Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- JSZip Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- FileSaver Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -44,7 +50,14 @@
 
     <main>
         <section class="generator-section container">
-            <div class="generator-wrapper">
+            <!-- Mode Switcher -->
+            <div class="mode-switcher">
+                <button class="mode-btn active" data-mode="generate"><i class="fa-solid fa-plus"></i> Crear QR</button>
+                <button class="mode-btn" data-mode="scan"><i class="fa-solid fa-camera"></i> Escanear</button>
+                <button class="mode-btn" data-mode="bulk"><i class="fa-solid fa-layer-group"></i> Masivo</button>
+            </div>
+
+            <div class="generator-wrapper" id="mode-generate">
                 <!-- Controls Side -->
                 <div class="controls-panel">
 
@@ -431,6 +444,83 @@
                     </div>
                 </div>
             </div>
+            <!-- SCANNER MODE -->
+            <div class="generator-wrapper" id="mode-scan" style="display: none;">
+                <div class="scanner-container" style="width: 100%; text-align: center; padding: 2rem;">
+                    <h2><i class="fa-solid fa-camera"></i> Escáner de Códigos QR</h2>
+                    <p>Escanea usando tu cámara o sube una imagen</p>
+
+                    <div id="reader" style="width: 100%; max-width: 600px; margin: 2rem auto;"></div>
+
+                    <div class="scanner-result" id="scanner-result"
+                        style="display: none; margin-top: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 1rem; border: 2px solid #e2e8f0;">
+                        <h3>¡Código Detectado!</h3>
+                        <p id="result-text"
+                            style="font-size: 1.2rem; margin: 1rem 0; word-break: break-all; font-family: monospace;">
+                        </p>
+                        <div class="result-actions">
+                            <button id="copy-result" class="btn btn-secondary btn-sm"><i class="fa-solid fa-copy"></i>
+                                Copiar</button>
+                            <a id="open-result" href="#" target="_blank" class="btn btn-primary btn-sm"><i
+                                    class="fa-solid fa-external-link-alt"></i> Abrir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BULK MODE -->
+            <div class="generator-wrapper" id="mode-bulk" style="display: none;">
+                <div class="controls-panel">
+                    <h2><i class="fa-solid fa-layer-group"></i> Generación Masiva</h2>
+                    <p style="margin-bottom: 1.5rem; color: #64748b;">Genera múltiples QRs secuenciales y descárgalos en
+                        un ZIP.</p>
+
+                    <div class="input-group">
+                        <label>Prefijo del Texto (ej: Mesa-)</label>
+                        <input type="text" id="bulk-prefix" placeholder="Mesa-">
+                    </div>
+
+                    <div class="input-group" style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label>Inicio (N°)</label>
+                            <input type="number" id="bulk-start" value="1">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Fin (N°)</label>
+                            <input type="number" id="bulk-end" value="10">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="bulk-include-text" checked>
+                            Incluir número en el nombre del archivo
+                        </label>
+                    </div>
+
+                    <button id="generate-bulk-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fa-solid fa-gears"></i> Generar ZIP
+                    </button>
+
+                    <div id="bulk-progress" style="display: none; margin-top: 1rem;">
+                        <p>Generando... <span id="bulk-counter">0</span> / <span id="bulk-total">0</span></p>
+                        <div
+                            style="width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                            <div id="bulk-bar" style="width: 0%; height: 100%; background: var(--primary-teal);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="qr-canvas-container"
+                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #64748b;">
+                        <i class="fa-solid fa-boxes-stacked"
+                            style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>Los QRs se generarán automáticamente <br>con la configuración de estilo actual.</p>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <section class="info-section">

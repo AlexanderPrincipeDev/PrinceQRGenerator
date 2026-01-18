@@ -209,6 +209,41 @@ nav a:hover {
     }
 }
 
+/* Mode Switcher */
+.mode-switcher {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.mode-btn {
+    padding: 0.75rem 1.5rem;
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: 999px;
+    font-weight: 600;
+    color: var(--gray-800);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mode-btn:hover {
+    border-color: var(--primary-teal);
+    color: var(--primary-teal);
+    transform: translateY(-2px);
+}
+
+.mode-btn.active {
+    background: var(--primary-teal);
+    border-color: var(--primary-teal);
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
 /* Controls Panel */
 .controls-panel {
     flex: 1;

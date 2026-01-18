@@ -654,4 +654,178 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
+    // --- MODE SWITCHING ---
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    const generatorWrappers = {
+        'generate': document.getElementById('mode-generate'),
+        'scan': document.getElementById('mode-scan'),
+        'bulk': document.getElementById('mode-bulk')
+    };
+
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const mode = btn.dataset.mode;
+
+            // Update buttons
+            modeBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update sections
+            Object.values(generatorWrappers).forEach(el => {
+                if (el) el.style.display = 'none';
+            });
+            if (generatorWrappers[mode]) generatorWrappers[mode].style.display = 'flex';
+
+            // Special Init for Scanner
+            if (mode === 'scan' && !scannerInitialized) {
+                initScanner();
+            }
+        });
+    });
+
+    // --- SCANNER LOGIC ---
+    let scannerInitialized = false;
+    let html5QrcodeScanner = null;
+
+    function initScanner() {
+        if (scannerInitialized) return;
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle the scanned code
+            const resultDiv = document.getElementById('scanner-result');
+            const resultText = document.getElementById('result-text');
+            const openBtn = document.getElementById('open-result');
+
+            resultDiv.style.display = 'block';
+            resultText.innerText = decodedText;
+
+            // Open button
+            if (decodedText.startsWith('http')) {
+                openBtn.href = decodedText;
+                openBtn.style.display = 'inline-flex';
+            } else {
+                openBtn.style.display = 'none';
+            }
+            // Optional: Stop scanning functionality could be added here
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning.
+        }
+
+        if (document.getElementById('reader')) {
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader",
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                /* verbose= */ false);
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            scannerInitialized = true;
+        }
+
+        // Copy Result
+        const copyBtn = document.getElementById('copy-result');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                const text = document.getElementById('result-text').innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('¡Copiado!');
+                });
+            });
+        }
+    }
+
+    // --- BULK GENERATION ---
+    const bulkPrefix = document.getElementById('bulk-prefix');
+    const bulkStart = document.getElementById('bulk-start');
+    const bulkEnd = document.getElementById('bulk-end');
+    const bulkIncludeText = document.getElementById('bulk-include-text');
+    const generateBulkBtn = document.getElementById('generate-bulk-btn');
+    const bulkProgress = document.getElementById('bulk-progress');
+    const bulkBar = document.getElementById('bulk-bar');
+    const bulkCounter = document.getElementById('bulk-counter');
+    const bulkTotal = document.getElementById('bulk-total');
+
+    if (generateBulkBtn) {
+        generateBulkBtn.addEventListener('click', async () => {
+            const prefix = bulkPrefix.value || "";
+            const start = parseInt(bulkStart.value) || 1;
+            const end = parseInt(bulkEnd.value) || 10;
+            const includeText = bulkIncludeText.checked;
+
+            if (end < start) {
+                alert('El número final debe ser mayor al inicial');
+                return;
+            }
+
+            const total = end - start + 1;
+            // Limit for browser performance
+            if (total > 500) {
+                alert('Por seguridad del navegador, el límite es 500 QRs por lote.');
+                return;
+            }
+            if (total > 50) {
+                if (!confirm(`Estás a punto de generar ${total} QRs. Esto puede tomar un momento. ¿Continuar?`)) return;
+            }
+
+            // Setup UI
+            generateBulkBtn.disabled = true;
+            generateBulkBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
+            bulkProgress.style.display = 'block';
+            bulkTotal.innerText = total;
+
+            const zip = new JSZip();
+            const folder = zip.folder("codes");
+
+            // Save current state
+            // Note: _options is internal, better just update(data) and restore? 
+            // We'll just restore the data variable we have in 'currentData' if we tracked it?
+            // Actually getQRData() gets from Inputs. We can just run updateQR() at the end to restore UI state.
+
+            // We need a separate styling instance or just reuse the main one but ensure we don't break the Preview too much.
+            // Reusing main instance updates the canvas on screen, which looks cool (user sees it flashing).
+
+            for (let i = 0; i < total; i++) {
+                const currentNum = start + i;
+                const text = `${prefix}${currentNum}`;
+
+                // Update QR
+                qrCode.update({ data: text });
+
+                // Wait for render (crucial for canvas to update)
+                await new Promise(resolve => setTimeout(resolve, 50));
+
+                // Get Blob
+                try {
+                    const blob = await qrCode.getRawData('png');
+                    if (blob) {
+                        const filename = includeText ? `${text}.png` : `qr-${currentNum}.png`;
+                        folder.file(filename, blob);
+                    }
+                } catch (e) {
+                    console.error("Error generating QR", e);
+                }
+
+                // Update Progress
+                bulkCounter.innerText = i + 1;
+                bulkBar.style.width = `${((i + 1) / total) * 100}%`;
+            }
+
+            // Restore original UI
+            updateQR();
+
+            // Generate Zip
+            const content = await zip.generateAsync({ type: "blob" });
+            saveAs(content, "prince-qr-bulk.zip");
+
+            // Reset UI
+            generateBulkBtn.disabled = false;
+            generateBulkBtn.innerHTML = '<i class="fa-solid fa-gears"></i> Generar ZIP';
+            setTimeout(() => {
+                bulkProgress.style.display = 'none';
+                bulkBar.style.width = '0%';
+            }, 3000);
+        });
+    }
+
 });
