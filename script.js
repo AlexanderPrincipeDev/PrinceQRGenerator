@@ -210,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ]
             };
         } else {
+            qrOptions.dotsOptions.gradient = null;
             qrOptions.dotsOptions.color = dotsColorInput.value;
         }
 
@@ -224,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ]
             };
         } else {
+            qrOptions.backgroundOptions.gradient = null;
             qrOptions.backgroundOptions.color = bgColorInput.value;
         }
 
@@ -1156,28 +1158,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- DARK MODE ---
-    const themeToggle = document.getElementById('theme-toggle');
-    const htmlEl = document.documentElement;
-
-    // Check saved theme
-    if (localStorage.getItem('theme') === 'dark') {
-        htmlEl.setAttribute('data-theme', 'dark');
-        if (themeToggle) themeToggle.querySelector('i').className = 'fa-solid fa-sun';
-    }
-
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = htmlEl.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-            htmlEl.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-
-            // Toggle Icon
-            const icon = themeToggle.querySelector('i');
-            icon.className = newTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-        });
-    }
-
+    // --- SEARCH PARAMS HANDLER ---
+    // (Optional: handle ?url=... etc. if needed later)
 });
