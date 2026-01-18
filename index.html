@@ -9,6 +9,9 @@
         content="Genera códigos QR personalizados y profesionales con Prince QR Generator. Añade colores, logos y descarga en alta calidad.">
 
     <!-- Google Fonts -->
+    <link rel="icon" type="image/x-icon" href="https://img.icons8.com/fluency/48/qr-code.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1399AB">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +27,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <!-- FileSaver Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -43,7 +48,10 @@
                 <a href="index.html" class="active">Generador</a>
                 <a href="guide.html">Guía de Uso</a>
                 <a href="faq.html">Preguntas Frecuentes</a>
-                <a href="about.html">Acerca de</a>
+                <a href="about.html">Nosotros</a>
+                <button id="theme-toggle" class="theme-toggle" title="Cambiar Tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
             </nav>
         </div>
     </header>
@@ -95,8 +103,16 @@
                     <!-- URL Form -->
                     <div class="qr-form" id="form-url">
                         <div class="input-group">
-                            <label for="url-input"><i class="fa-solid fa-link"></i> URL o Texto</label>
-                            <input type="text" id="url-input" placeholder="https://ejemplo.com" value="">
+                            <label for="url-input"><i class="fa-solid fa-link"></i> Dirección Web (URL)</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="url" id="url-input" placeholder="https://ejemplo.com" style="flex:1;">
+                                <button id="shorten-btn" class="btn btn-secondary" style="width: auto; padding: 0 1rem;"
+                                    title="Acortar URL">
+                                    <i class="fa-solid fa-compress"></i>
+                                </button>
+                            </div>
+                            <small id="shorten-msg"
+                                style="display: none; color: var(--primary-teal); margin-top: 5px; font-size: 0.8rem;"></small>
                         </div>
                     </div>
 
@@ -366,6 +382,36 @@
                             </div>
                         </div>
 
+                        <!-- Frames / Marcos -->
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span><i class="fa-solid fa-crop-simple"></i> Marcos y Texto</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="qr-option-group">
+                                    <label>Tipo de Marco</label>
+                                    <select id="frame-type">
+                                        <option value="none">Ninguno</option>
+                                        <option value="scanme">Texto "Scan Me"</option>
+                                        <option value="border">Borde Simple</option>
+                                        <option value="polaroid">Estilo Polaroid</option>
+                                    </select>
+                                </div>
+                                <div class="qr-option-group" id="frame-text-group" style="display: none;">
+                                    <label>Texto del Marco</label>
+                                    <input type="text" id="frame-text" value="ESCANÉAME" maxlength="20">
+                                </div>
+                                <div class="qr-option-group" id="frame-color-group" style="display: none;">
+                                    <label>Color del Marco</label>
+                                    <div class="color-inputs">
+                                        <input type="color" id="frame-color" value="#000000">
+                                        <input type="text" class="hex-input" id="frame-color-line" value="#000000">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Logo -->
                         <div class="accordion-item">
                             <button class="accordion-header">
@@ -498,9 +544,14 @@
                         </label>
                     </div>
 
-                    <button id="generate-bulk-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-                        <i class="fa-solid fa-gears"></i> Generar ZIP
-                    </button>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button id="generate-bulk-btn" class="btn btn-primary" style="flex: 1;">
+                            <i class="fa-solid fa-gears"></i> Generar ZIP
+                        </button>
+                        <button id="print-bulk-btn" class="btn btn-secondary" style="flex: 1;">
+                            <i class="fa-solid fa-print"></i> PDF
+                        </button>
+                    </div>
 
                     <div id="bulk-progress" style="display: none; margin-top: 1rem;">
                         <p>Generando... <span id="bulk-counter">0</span> / <span id="bulk-total">0</span></p>
@@ -563,6 +614,13 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Service Worker Registrado'))
+                .catch((err) => console.log('Error SW:', err));
+        }
+    </script>
 </body>
 
 </html>
