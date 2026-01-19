@@ -236,6 +236,8 @@
                 } else {
                     alert("Guardado ✅");
                     updateAvatarPreview(payload.avatar_url);
+                    // Redirect to home page after saving
+                    window.location.href = "index.html";
                 }
 
             } catch (error) {
