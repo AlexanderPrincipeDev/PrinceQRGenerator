@@ -27,7 +27,7 @@ if (loginLink || authBtn) {
                     .eq('id', userId)
                     .single();
 
-                updateAuthUI(true, profileError ? null : profile);
+                updateAuthUI(true, profileError ? null : profile, session.user);
             } else {
                 updateAuthUI(false);
             }
@@ -56,7 +56,7 @@ if (loginLink || authBtn) {
         }, 2000);
     }
 
-    function updateAuthUI(isLoggedIn, profile) {
+    function updateAuthUI(isLoggedIn, profile, user) {
         if (loginLink) {
             loginLink.classList.toggle('hidden', isLoggedIn);
         }
@@ -84,11 +84,16 @@ if (loginLink || authBtn) {
                 content += `<i class="fa-solid fa-user-circle" aria-hidden="true"></i>`;
             }
 
+            let displayName = '';
             if (profile && profile.display_name) {
-                content += `<span>${profile.display_name}</span>`;
+                displayName = profile.display_name;
+            } else if (user && user.email) {
+                displayName = user.email.split('@')[0];
             } else {
-                content += `<span>Mi Cuenta</span>`;
+                displayName = 'Cuenta';
             }
+
+            content += `<span>${displayName}</span>`;
 
             authBtn.innerHTML = content;
         }
