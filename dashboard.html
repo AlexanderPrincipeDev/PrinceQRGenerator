@@ -5,149 +5,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Prince QR Generator</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --border: #e2e8f0;
-        }
+    <meta name="description" content="Gestiona tu perfil en Prince QR Generator.">
 
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+    <link rel="icon" type="image/x-icon" href="https://img.icons8.com/fluency/48/qr-code.png">
 
-        .container {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            width: 100%;
-            max-width: 600px;
-        }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        h2 {
-            margin-top: 0;
-            text-align: center;
-        }
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
 
-        .form-group {
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        .avatar-preview {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #e2e8f0;
-            margin: 0 auto 1rem;
-            display: block;
-            object-fit: cover;
-        }
-
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        button.secondary {
-            background: #94a3b8;
-        }
-
-        button.logout {
-            background: #ef4444;
-            margin-top: 2rem;
-        }
-
-        #loading {
-            text-align: center;
-            color: #64748b;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .success-msg {
-            color: #166534;
-            background: #dcfce7;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
-            display: none;
-            text-align: center;
-        }
-    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-    <div class="container">
-        <div id="loading">Verificando sesión...</div>
-
-        <div id="content" class="hidden">
-            <img id="avatarImg" src="" class="avatar-preview" alt="Avatar">
-            <h2>Mi Perfil</h2>
-
-            <div class="form-group">
-                <label>Correo</label>
-                <input type="text" id="email" disabled style="background:#f1f5f9; color:#64748b;">
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fa-solid fa-qrcode"></i>
+                <span>Prince QR</span>
             </div>
-
-            <div class="form-group">
-                <label for="displayName">Nombre</label>
-                <input type="text" id="displayName" placeholder="Tu nombre">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav id="main-nav">
+                <a href="index.html">Generador</a>
+                <a href="guide.html">Guía de Uso</a>
+                <a href="faq.html">Preguntas Frecuentes</a>
+                <a href="about.html">Acerca de</a>
+                <a href="dashboard.html" class="active">Mi Cuenta</a>
+                <a href="login.html">Login</a>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" id="login-link" class="btn-auth">
+                    <i class="fa-regular fa-user" aria-hidden="true"></i><span>Login</span>
+                </a>
+                <div class="auth-menu" id="auth-menu">
+                    <button type="button" id="user-auth-btn" class="btn-auth" aria-expanded="false"
+                        aria-haspopup="menu">
+                        <i class="fa-solid fa-user-circle" aria-hidden="true"></i><span>Mi Cuenta</span>
+                    </button>
+                    <div id="user-auth-menu" class="auth-menu-panel" role="menu" aria-hidden="true">
+                        <a href="dashboard.html" role="menuitem">Editar perfil</a>
+                        <button type="button" id="logout-btn" role="menuitem">Cerrar sesión</button>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="phone">Teléfono</label>
-                <input type="tel" id="phone" placeholder="+51 999 999 999">
-            </div>
-
-            <div class="form-group">
-                <label for="avatarUrl">URL del Avatar</label>
-                <input type="url" id="avatarUrl" placeholder="https://ejemplo.com/foto.jpg">
-            </div>
-
-            <button id="saveBtn">Guardar Cambios</button>
-            <div id="msg" class="success-msg">Datos actualizados correctamente</div>
-
-            <button id="logoutBtn" class="logout">Cerrar Sesión</button>
         </div>
-    </div>
+    </header>
+
+    <main class="auth-page">
+        <div class="container auth-container">
+            <div class="auth-card auth-card--wide">
+                <p id="loading" class="auth-subtitle">Verificando sesión...</p>
+
+                <div id="content" class="hidden">
+                    <img id="avatarImg" src="" class="avatar-preview" alt="Avatar" style="display: none;">
+                    <h1 class="auth-title">Mi Perfil</h1>
+
+                    <div class="input-group">
+                        <label for="email">Correo</label>
+                        <input type="text" id="email" disabled>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="displayName">Nombre</label>
+                        <input type="text" id="displayName" placeholder="Tu nombre">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="phone">Teléfono</label>
+                        <input type="tel" id="phone" placeholder="+51 999 999 999">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="avatarUrl">URL del Avatar</label>
+                        <input type="url" id="avatarUrl" placeholder="https://ejemplo.com/foto.jpg">
+                    </div>
+
+                    <button id="saveBtn" class="btn btn-primary">Guardar Cambios</button>
+                    <div id="msg" class="status-message" role="status" aria-live="polite"></div>
+
+                    <button id="logoutBtn" class="btn btn-danger">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Prince QR Generator. Todos los derechos reservados.</p>
+            <div class="dev-credit-badge"
+                style="margin: 0.9rem auto 0; width: fit-content; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.55rem 1.1rem; border-radius: 999px; background: #f8fafc; color: #0f172a; font-size: 0.95rem; font-weight: 700; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.1); border: 1px solid rgba(148, 163, 184, 0.35); text-align: center;">
+                <span style="text-transform: uppercase; letter-spacing: 0.6px; font-size: 0.68rem; opacity: 0.7;">Web
+                    creada por</span>
+                <a href="https://prince-code-labs.vercel.app/" target="_blank" rel="noopener noreferrer"
+                    style="color: #0f172a; text-decoration: none; font-weight: 800; border-bottom: 2px solid rgba(15, 23, 42, 0.35);">Prince
+                    Code Labs</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- Supabase Logic -->
     <script type="module">
@@ -169,6 +129,11 @@
         const saveBtn = document.getElementById('saveBtn');
         const msgEl = document.getElementById('msg');
         let currentUser = null;
+
+        function showMessage(text, type) {
+            msgEl.textContent = text;
+            msgEl.className = `status-message is-visible ${type}`;
+        }
 
         async function init() {
             try {
@@ -203,6 +168,10 @@
                     .eq('id', currentUser.id)
                     .single();
 
+                if (error) {
+                    return;
+                }
+
                 if (data) {
                     displayNameInput.value = data.display_name || '';
                     phoneInput.value = data.phone || '';
@@ -210,7 +179,6 @@
                     updateAvatarPreview(data.avatar_url);
                 }
             } catch (error) {
-                // If profiles don't exist yet, that's fine, we'll create one on save
                 console.log("No profile found or error:", error);
             }
         }
@@ -219,8 +187,10 @@
             try {
                 saveBtn.disabled = true;
                 saveBtn.textContent = "Guardando...";
+                msgEl.className = 'status-message';
 
                 const payload = {
+                    id: currentUser.id,
                     display_name: displayNameInput.value,
                     phone: phoneInput.value,
                     avatar_url: avatarUrlInput.value
@@ -228,20 +198,18 @@
 
                 const { error } = await supabase
                     .from("profiles")
-                    .update(payload)
-                    .eq("id", currentUser.id);
+                    .upsert(payload, { onConflict: 'id' });
 
                 if (error) {
-                    alert(error.message);
-                } else {
-                    alert("Guardado ✅");
-                    updateAvatarPreview(payload.avatar_url);
-                    // Redirect to home page after saving
-                    window.location.href = "index.html";
+                    showMessage(error.message, 'error');
+                    return;
                 }
 
+                updateAvatarPreview(payload.avatar_url);
+                showMessage("Datos actualizados correctamente.", 'success');
+
             } catch (error) {
-                alert("Error inesperado: " + error.message);
+                showMessage("Error inesperado: " + error.message, 'error');
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "Guardar Cambios";
@@ -258,7 +226,6 @@
         }
 
         saveBtn.addEventListener('click', updateProfile);
-
         avatarUrlInput.addEventListener('input', (e) => updateAvatarPreview(e.target.value));
 
         document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -268,6 +235,8 @@
 
         init();
     </script>
+    <script type="module" src="auth.js"></script>
+    <script src="site.js"></script>
 </body>
 
 </html>

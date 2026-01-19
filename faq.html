@@ -35,8 +35,24 @@
                 <a href="guide.html">Guía de Uso</a>
                 <a href="faq.html" class="active">Preguntas Frecuentes</a>
                 <a href="about.html">Acerca de</a>
+                <a href="dashboard.html">Mi Cuenta</a>
                 <a href="login.html">Login</a>
             </nav>
+            <div class="header-actions">
+                <a href="login.html" id="login-link" class="btn-auth">
+                    <i class="fa-regular fa-user" aria-hidden="true"></i><span>Login</span>
+                </a>
+                <div class="auth-menu" id="auth-menu">
+                    <button type="button" id="user-auth-btn" class="btn-auth" aria-expanded="false"
+                        aria-haspopup="menu">
+                        <i class="fa-solid fa-user-circle" aria-hidden="true"></i><span>Mi Cuenta</span>
+                    </button>
+                    <div id="user-auth-menu" class="auth-menu-panel" role="menu" aria-hidden="true">
+                        <a href="dashboard.html" role="menuitem">Editar perfil</a>
+                        <button type="button" id="logout-btn" role="menuitem">Cerrar sesión</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -286,53 +302,41 @@
 
     <script>
         // FAQ Accordion functionality
-        document.querySelectorAll('.faq-question').forEach(button => {
+        document.querySelectorAll('.faq-question').forEach((button, index) => {
+            const faqItem = button.parentElement;
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('.fa-chevron-down');
+            const questionId = `faq-question-${index + 1}`;
+            const answerId = `faq-answer-${index + 1}`;
+
+            button.setAttribute('id', questionId);
+            button.setAttribute('type', 'button');
+            button.setAttribute('aria-expanded', 'false');
+            button.setAttribute('aria-controls', answerId);
+
+            if (answer) {
+                answer.setAttribute('id', answerId);
+                answer.setAttribute('role', 'region');
+                answer.setAttribute('aria-labelledby', questionId);
+                answer.setAttribute('aria-hidden', 'true');
+            }
+
             button.addEventListener('click', () => {
-                const faqItem = button.parentElement;
-                const answer = button.nextElementSibling;
-                const icon = button.querySelector('.fa-chevron-down');
+                const isOpen = faqItem.classList.toggle('active');
+                button.setAttribute('aria-expanded', String(isOpen));
 
-                // Toggle active state
-                faqItem.classList.toggle('active');
+                if (answer) {
+                    answer.setAttribute('aria-hidden', String(!isOpen));
+                }
 
-                // Rotate icon
-                if (faqItem.classList.contains('active')) {
-                    icon.style.transform = 'rotate(180deg)';
-                } else {
-                    icon.style.transform = 'rotate(0deg)';
+                if (icon) {
+                    icon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
                 }
             });
         });
-
-        // Mobile Menu Toggle
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const mainNav = document.getElementById('main-nav');
-
-        if (mobileMenuToggle && mainNav) {
-            mobileMenuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('active');
-                const icon = mobileMenuToggle.querySelector('i');
-                if (mainNav.classList.contains('active')) {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
-                } else {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            });
-
-            // Close menu when clicking on a link
-            const navLinks = mainNav.querySelectorAll('a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mainNav.classList.remove('active');
-                    const icon = mobileMenuToggle.querySelector('i');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                });
-            });
-        }
     </script>
+    <script type="module" src="auth.js"></script>
+    <script src="site.js"></script>
 </body>
 
 </html>

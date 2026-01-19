@@ -35,8 +35,24 @@
                 <a href="guide.html">Guía de Uso</a>
                 <a href="faq.html">Preguntas Frecuentes</a>
                 <a href="about.html" class="active">Acerca de</a>
+                <a href="dashboard.html">Mi Cuenta</a>
                 <a href="login.html">Login</a>
             </nav>
+            <div class="header-actions">
+                <a href="login.html" id="login-link" class="btn-auth">
+                    <i class="fa-regular fa-user" aria-hidden="true"></i><span>Login</span>
+                </a>
+                <div class="auth-menu" id="auth-menu">
+                    <button type="button" id="user-auth-btn" class="btn-auth" aria-expanded="false"
+                        aria-haspopup="menu">
+                        <i class="fa-solid fa-user-circle" aria-hidden="true"></i><span>Mi Cuenta</span>
+                    </button>
+                    <div id="user-auth-menu" class="auth-menu-panel" role="menu" aria-hidden="true">
+                        <a href="dashboard.html" role="menuitem">Editar perfil</a>
+                        <button type="button" id="logout-btn" role="menuitem">Cerrar sesión</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -214,36 +230,8 @@
         </div>
     </footer>
 
-    <script>
-        // Mobile Menu Toggle
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const mainNav = document.getElementById('main-nav');
-
-        if (mobileMenuToggle && mainNav) {
-            mobileMenuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('active');
-                const icon = mobileMenuToggle.querySelector('i');
-                if (mainNav.classList.contains('active')) {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
-                } else {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            });
-
-            // Close menu when clicking on a link
-            const navLinks = mainNav.querySelectorAll('a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mainNav.classList.remove('active');
-                    const icon = mobileMenuToggle.querySelector('i');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                });
-            });
-        }
-    </script>
+    <script type="module" src="auth.js"></script>
+    <script src="site.js"></script>
 </body>
 
 </html>

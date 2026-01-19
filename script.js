@@ -1,4 +1,46 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const scriptLoaders = {};
+    const loadScriptOnce = (src) => {
+        if (scriptLoaders[src]) {
+            return scriptLoaders[src];
+        }
+
+        scriptLoaders[src] = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`No se pudo cargar ${src}`));
+            document.head.appendChild(script);
+        });
+
+        return scriptLoaders[src];
+    };
+
+    const ensureQrStyling = async () => {
+        if (!window.QRCodeStyling) {
+            await loadScriptOnce('https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js');
+        }
+    };
+
+    const ensureScannerLib = async () => {
+        if (!window.Html5QrcodeScanner) {
+            await loadScriptOnce('https://unpkg.com/html5-qrcode');
+        }
+    };
+
+    const ensureBulkLibs = async () => {
+        if (!window.JSZip) {
+            await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+        }
+        if (!window.saveAs) {
+            await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js');
+        }
+        if (!window.jspdf) {
+            await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+        }
+    };
 
     // --- Configuration ---
     let qrText = "https://princeqr.com";
@@ -142,6 +184,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initialization ---
     let currentLogo = ""; // Store current logo data URL
+    try {
+        await ensureQrStyling();
+    } catch (error) {
+        console.error(error);
+        alert('No se pudo cargar la libreria de QR. Revisa tu conexion.');
+        return;
+    }
+
     const qrCode = new QRCodeStyling({
         width: 300,
         height: 300,
@@ -903,36 +953,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize history on page load
     loadHistory();
 
-    // Mobile Menu Toggle
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const mainNav = document.getElementById('main-nav');
-
-    if (mobileMenuToggle && mainNav) {
-        mobileMenuToggle.addEventListener('click', () => {
-            mainNav.classList.toggle('active');
-            const icon = mobileMenuToggle.querySelector('i');
-            if (mainNav.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
-        });
-
-        // Close menu when clicking on a link
-        const navLinks = mainNav.querySelectorAll('a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mainNav.classList.remove('active');
-                const icon = mobileMenuToggle.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            });
-        });
-    }
-
-
     // --- MODE SWITCHING ---
     const modeBtns = document.querySelectorAll('.mode-btn');
     const generatorWrappers = {
@@ -957,7 +977,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Special Init for Scanner
             if (mode === 'scan' && !scannerInitialized) {
-                initScanner();
+                initScanner().catch((error) => {
+                    console.error(error);
+                    showNotification('No se pudo iniciar el escaner.', 'error');
+                });
             }
         });
     });
@@ -989,10 +1012,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // handle scan failure, usually better to ignore and keep scanning.
     }
 
-    function initScanner() {
+    async function initScanner() {
         if (scannerInitialized) return;
 
         if (document.getElementById('reader')) {
+            await ensureScannerLib();
             html5QrcodeScanner = new Html5QrcodeScanner(
                 "reader",
                 { fps: 10, qrbox: { width: 250, height: 250 } },
@@ -1083,6 +1107,16 @@ document.addEventListener('DOMContentLoaded', () => {
             generateBulkBtn.disabled = true;
             generateBulkBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
+            try {
+                await ensureBulkLibs();
+            } catch (error) {
+                console.error(error);
+                showNotification('No se pudieron cargar las librerias de exportacion.', 'error');
+                generateBulkBtn.disabled = false;
+                generateBulkBtn.innerHTML = '<i class="fa-solid fa-gears"></i> Generar ZIP';
+                return;
+            }
+
             const zip = new JSZip();
             const folder = zip.folder("codes");
             const includeText = bulkIncludeText.checked;
@@ -1106,6 +1140,16 @@ document.addEventListener('DOMContentLoaded', () => {
         printBulkBtn.addEventListener('click', async () => {
             printBulkBtn.disabled = true;
             printBulkBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            try {
+                await ensureBulkLibs();
+            } catch (error) {
+                console.error(error);
+                showNotification('No se pudieron cargar las librerias de exportacion.', 'error');
+                printBulkBtn.disabled = false;
+                printBulkBtn.innerHTML = '<i class="fa-solid fa-print"></i> PDF';
+                return;
+            }
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF(); // A4 by default

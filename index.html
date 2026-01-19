@@ -19,17 +19,6 @@
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- QR Code Styling Library -->
-    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-    <!-- HTML5-QRCode Library -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <!-- JSZip Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <!-- FileSaver Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <!-- jsPDF Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -49,87 +38,26 @@
                 <a href="guide.html">Guía de Uso</a>
                 <a href="faq.html">Preguntas Frecuentes</a>
                 <a href="about.html">Nosotros</a>
+                <a href="dashboard.html">Mi Cuenta</a>
                 <a href="login.html">Login</a>
             </nav>
             <div class="header-actions">
-                <!-- Auth Container: Will be populated by JS -->
-                <a href="login.html" id="user-auth-btn" class="btn-auth"
-                    style="display: none; text-decoration: none; align-items: center; gap: 8px; font-weight: 500; font-size: 0.9rem; color: var(--color-text);">
-                    <i class="fa-regular fa-user"></i> Login
+                <a href="login.html" id="login-link" class="btn-auth">
+                    <i class="fa-regular fa-user" aria-hidden="true"></i><span>Login</span>
                 </a>
+                <div class="auth-menu" id="auth-menu">
+                    <button type="button" id="user-auth-btn" class="btn-auth" aria-expanded="false"
+                        aria-haspopup="menu">
+                        <i class="fa-solid fa-user-circle" aria-hidden="true"></i><span>Mi Cuenta</span>
+                    </button>
+                    <div id="user-auth-menu" class="auth-menu-panel" role="menu" aria-hidden="true">
+                        <a href="dashboard.html" role="menuitem">Editar perfil</a>
+                        <button type="button" id="logout-btn" role="menuitem">Cerrar sesión</button>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
-
-    <!-- Supabase Auth Integration for Main Site -->
-    <script type="module">
-        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-        const SUPABASE_URL = "https://wqhatywfpwioneziadle.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxaGF0eXdmcHdpb25lemlhZGxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4MzE0NzAsImV4cCI6MjA4NDQwNzQ3MH0.e437EhncDLKPqLNRKJFh3-jvKB96-7iwXrBNOw0GvKk";
-
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const authBtn = document.getElementById('user-auth-btn');
-
-        async function checkSession() {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-
-                if (session) {
-                    // User is logged in
-                    const userId = session.user.id;
-
-                    // Try to fetch profile for more details
-                    const { data: profile } = await supabase
-                        .from('profiles')
-                        .select('display_name, avatar_url')
-                        .eq('id', userId)
-                        .single();
-
-                    updateAuthUI(true, profile);
-                } else {
-                    // User is logged out
-                    updateAuthUI(false);
-                }
-            } catch (error) {
-                console.error("Auth check failed:", error);
-                updateAuthUI(false);
-            }
-        }
-
-        function updateAuthUI(isLoggedIn, profile) {
-            authBtn.style.display = 'flex'; // Show button now that we know state
-
-            if (isLoggedIn) {
-                authBtn.href = "dashboard.html";
-                authBtn.title = "Ir al Dashboard";
-
-                let content = '';
-                if (profile && profile.avatar_url) {
-                    content += `<img src="${profile.avatar_url}" alt="Avatar" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #ccc;">`;
-                } else {
-                    content += `<i class="fa-solid fa-user-circle" style="font-size: 1.2rem;"></i>`;
-                }
-
-                if (profile && profile.display_name) {
-                    content += `<span>${profile.display_name}</span>`;
-                } else {
-                    content += `<span>Mi Cuenta</span>`;
-                }
-
-                authBtn.innerHTML = content;
-                // Optional: Add specific style for logged-in state
-                authBtn.style.color = "var(--color-primary)";
-
-            } else {
-                authBtn.href = "login.html";
-                authBtn.innerHTML = `<i class="fa-regular fa-user"></i> Login`;
-                authBtn.style.color = "var(--color-text)";
-            }
-        }
-
-        checkSession();
-    </script>
 
     <main>
         <section class="generator-section container">
@@ -688,41 +616,14 @@
         </div>
     </footer>
 
+    <script type="module" src="auth.js"></script>
+    <script src="site.js"></script>
     <script src="script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
                 .then(() => console.log('Service Worker Registrado'))
                 .catch((err) => console.log('Error SW:', err));
-        }
-
-        // Mobile Menu Toggle
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const mainNav = document.getElementById('main-nav');
-
-        if (mobileMenuToggle && mainNav) {
-            mobileMenuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('active');
-                const icon = mobileMenuToggle.querySelector('i');
-                if (mainNav.classList.contains('active')) {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
-                } else {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            });
-
-            // Close menu when clicking on a link
-            const navLinks = mainNav.querySelectorAll('a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mainNav.classList.remove('active');
-                    const icon = mobileMenuToggle.querySelector('i');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                });
-            });
         }
     </script>
 </body>
