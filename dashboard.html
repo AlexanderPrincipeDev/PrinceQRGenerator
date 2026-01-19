@@ -189,8 +189,17 @@
                 saveBtn.textContent = "Guardando...";
                 msgEl.className = 'status-message';
 
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    showMessage("Tu sesión ha expirado. Inicia sesión nuevamente.", 'error');
+                    console.warn("Sesion expirada: redirigiendo a login.");
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 1200);
+                    return;
+                }
+
                 const payload = {
-                    id: currentUser.id,
                     display_name: displayNameInput.value,
                     phone: phoneInput.value,
                     avatar_url: avatarUrlInput.value
@@ -198,7 +207,8 @@
 
                 const { error } = await supabase
                     .from("profiles")
-                    .upsert(payload, { onConflict: 'id' });
+                    .update(payload)
+                    .eq("id", user.id);
 
                 if (error) {
                     showMessage(error.message, 'error');
