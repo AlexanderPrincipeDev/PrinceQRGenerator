@@ -1,5 +1,3 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
 const SUPABASE_URL = "https://wqhatywfpwioneziadle.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxaGF0eXdmcHdpb25lemlhZGxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4MzE0NzAsImV4cCI6MjA4NDQwNzQ3MH0.e437EhncDLKPqLNRKJFh3-jvKB96-7iwXrBNOw0GvKk";
 
@@ -11,6 +9,13 @@ const logoutBtn = document.getElementById('logout-btn');
 const navLogin = document.getElementById('nav-login');
 
 if (loginLink || authBtn) {
+    if (!window.supabase || !window.supabase.createClient) {
+        console.error("Supabase no disponible en window.supabase");
+        updateAuthUI(false);
+        return;
+    }
+
+    const { createClient } = window.supabase;
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function checkSession() {
