@@ -61,7 +61,14 @@ if (loginLink || authBtn) {
                 content += `<i class="fa-solid fa-user-circle" aria-hidden="true"></i>`;
             }
 
-            const displayName = 'Mi Cuenta';
+            let displayName = '';
+            if (profile && profile.display_name) {
+                displayName = profile.display_name;
+            } else if (user && user.email) {
+                displayName = user.email;
+            } else {
+                displayName = 'Mi Cuenta';
+            }
 
             content += `<span>${displayName}</span>`;
 
