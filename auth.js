@@ -44,6 +44,18 @@ if (loginLink || authBtn) {
         authBtn.setAttribute('aria-expanded', String(isOpen));
     }
 
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'auth-toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('is-visible'));
+        setTimeout(() => {
+            toast.classList.remove('is-visible');
+            setTimeout(() => toast.remove(), 200);
+        }, 2000);
+    }
+
     function updateAuthUI(isLoggedIn, profile) {
         if (loginLink) {
             loginLink.classList.toggle('hidden', isLoggedIn);
@@ -112,7 +124,10 @@ if (loginLink || authBtn) {
             await supabase.auth.signOut();
             setMenuOpen(false);
             updateAuthUI(false);
-            window.location.href = "login.html";
+            showToast("Sesion cerrada");
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 800);
         });
     }
 
