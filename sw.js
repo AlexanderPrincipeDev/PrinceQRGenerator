@@ -1,4 +1,4 @@
-const CACHE_NAME = "prince-qr-v4";
+const CACHE_NAME = "prince-qr-v5";
 const ASSETS = [
     "./",
     "./index.html",
