@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Prince QR Generator</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            margin: 0 auto 1rem;
+            display: block;
+            object-fit: cover;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button.secondary {
+            background: #94a3b8;
+        }
+
+        button.logout {
+            background: #ef4444;
+            margin-top: 2rem;
+        }
+
+        #loading {
+            text-align: center;
+            color: #64748b;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .success-msg {
+            color: #166534;
+            background: #dcfce7;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="loading">Verificando sesión...</div>
+
+        <div id="content" class="hidden">
+            <img id="avatarImg" src="" class="avatar-preview" alt="Avatar">
+            <h2>Mi Perfil</h2>
+
+            <div class="form-group">
+                <label>Correo</label>
+                <input type="text" id="email" disabled style="background:#f1f5f9; color:#64748b;">
+            </div>
+
+            <div class="form-group">
+                <label for="displayName">Nombre</label>
+                <input type="text" id="displayName" placeholder="Tu nombre">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Teléfono</label>
+                <input type="tel" id="phone" placeholder="+51 999 999 999">
+            </div>
+
+            <div class="form-group">
+                <label for="avatarUrl">URL del Avatar</label>
+                <input type="url" id="avatarUrl" placeholder="https://ejemplo.com/foto.jpg">
+            </div>
+
+            <button id="saveBtn">Guardar Cambios</button>
+            <div id="msg" class="success-msg">Datos actualizados correctamente</div>
+
+            <button id="logoutBtn" class="logout">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Supabase Logic -->
+    <script type="module">
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+        const SUPABASE_URL = "https://wqhatywfpwioneziadle.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxaGF0eXdmcHdpb25lemlhZGxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4MzE0NzAsImV4cCI6MjA4NDQwNzQ3MH0.e437EhncDLKPqLNRKJFh3-jvKB96-7iwXrBNOw0GvKk";
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // UI Elements
+        const loadingEl = document.getElementById('loading');
+        const contentEl = document.getElementById('content');
+        const emailInput = document.getElementById('email');
+        const displayNameInput = document.getElementById('displayName');
+        const phoneInput = document.getElementById('phone');
+        const avatarUrlInput = document.getElementById('avatarUrl');
+        const avatarImg = document.getElementById('avatarImg');
+        const saveBtn = document.getElementById('saveBtn');
+        const msgEl = document.getElementById('msg');
+        let currentUser = null;
+
+        async function init() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (error) throw error;
+
+                if (!session) {
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                currentUser = session.user;
+                emailInput.value = currentUser.email;
+
+                // Load Profile Data
+                await loadProfile();
+
+                loadingEl.classList.add('hidden');
+                contentEl.classList.remove('hidden');
+
+            } catch (err) {
+                console.error("Auth Error:", err);
+                window.location.href = "login.html";
+            }
+        }
+
+        async function loadProfile() {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('display_name, phone, avatar_url')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (data) {
+                    displayNameInput.value = data.display_name || '';
+                    phoneInput.value = data.phone || '';
+                    avatarUrlInput.value = data.avatar_url || '';
+                    updateAvatarPreview(data.avatar_url);
+                }
+            } catch (error) {
+                // If profiles don't exist yet, that's fine, we'll create one on save
+                console.log("No profile found or error:", error);
+            }
+        }
+
+        async function updateProfile() {
+            try {
+                saveBtn.disabled = true;
+                saveBtn.textContent = "Guardando...";
+
+                const payload = {
+                    display_name: displayNameInput.value,
+                    phone: phoneInput.value,
+                    avatar_url: avatarUrlInput.value
+                };
+
+                const { error } = await supabase
+                    .from("profiles")
+                    .update(payload)
+                    .eq("id", currentUser.id);
+
+                if (error) {
+                    alert(error.message);
+                } else {
+                    alert("Guardado ✅");
+                    updateAvatarPreview(payload.avatar_url);
+                }
+
+            } catch (error) {
+                alert("Error inesperado: " + error.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Guardar Cambios";
+            }
+        }
+
+        function updateAvatarPreview(url) {
+            if (url) {
+                avatarImg.src = url;
+                avatarImg.style.display = 'block';
+            } else {
+                avatarImg.style.display = 'none';
+            }
+        }
+
+        saveBtn.addEventListener('click', updateProfile);
+
+        avatarUrlInput.addEventListener('input', (e) => updateAvatarPreview(e.target.value));
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = "login.html";
+        });
+
+        init();
+    </script>
+</body>
+
+</html>
