@@ -8,7 +8,6 @@ const authMenu = document.getElementById('auth-menu');
 const authBtn = document.getElementById('user-auth-btn');
 const authPanel = document.getElementById('user-auth-menu');
 const logoutBtn = document.getElementById('logout-btn');
-const navAccount = document.getElementById('nav-account');
 const navLogin = document.getElementById('nav-login');
 
 if (loginLink || authBtn) {
@@ -60,9 +59,6 @@ if (loginLink || authBtn) {
         if (loginLink) {
             loginLink.classList.toggle('hidden', isLoggedIn);
         }
-        if (navAccount) {
-            navAccount.classList.toggle('hidden', !isLoggedIn);
-        }
         if (navLogin) {
             navLogin.classList.toggle('hidden', isLoggedIn);
         }
@@ -90,7 +86,7 @@ if (loginLink || authBtn) {
             } else if (user && user.email) {
                 displayName = user.email.split('@')[0];
             } else {
-                displayName = 'Cuenta';
+                displayName = 'Usuario';
             }
 
             content += `<span>${displayName}</span>`;
