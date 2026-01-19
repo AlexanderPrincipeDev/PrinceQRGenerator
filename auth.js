@@ -84,7 +84,7 @@ if (loginLink || authBtn) {
             if (profile && profile.display_name) {
                 displayName = profile.display_name;
             } else if (user && user.email) {
-                displayName = user.email.split('@')[0];
+                displayName = user.email;
             } else {
                 displayName = 'Usuario';
             }
