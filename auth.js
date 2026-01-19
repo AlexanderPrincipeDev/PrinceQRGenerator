@@ -8,6 +8,8 @@ const authMenu = document.getElementById('auth-menu');
 const authBtn = document.getElementById('user-auth-btn');
 const authPanel = document.getElementById('user-auth-menu');
 const logoutBtn = document.getElementById('logout-btn');
+const navAccount = document.getElementById('nav-account');
+const navLogin = document.getElementById('nav-login');
 
 if (loginLink || authBtn) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -45,6 +47,12 @@ if (loginLink || authBtn) {
     function updateAuthUI(isLoggedIn, profile) {
         if (loginLink) {
             loginLink.classList.toggle('hidden', isLoggedIn);
+        }
+        if (navAccount) {
+            navAccount.classList.toggle('hidden', !isLoggedIn);
+        }
+        if (navLogin) {
+            navLogin.classList.toggle('hidden', isLoggedIn);
         }
         if (authMenu) {
             authMenu.classList.toggle('is-visible', isLoggedIn);
