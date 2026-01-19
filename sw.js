@@ -1,4 +1,4 @@
-const CACHE_NAME = "prince-qr-v1";
+const CACHE_NAME = "prince-qr-v3";
 const ASSETS = [
     "./",
     "./index.html",
@@ -21,12 +21,41 @@ self.addEventListener("install", (e) => {
             return cache.addAll(ASSETS);
         })
     );
+    self.skipWaiting();
+});
+
+self.addEventListener("activate", (e) => {
+    e.waitUntil(
+        caches.keys().then((keys) => {
+            return Promise.all(
+                keys.filter((key) => key !== CACHE_NAME)
+                    .map((key) => caches.delete(key))
+            );
+        })
+    );
 });
 
 self.addEventListener("fetch", (e) => {
-    e.respondWith(
-        caches.match(e.request).then((response) => {
-            return response || fetch(e.request);
-        })
-    );
+    const isHtmlRequest = e.request.mode === 'navigate' ||
+        (e.request.method === 'GET' && e.request.headers.get('accept').includes('text/html'));
+
+    if (isHtmlRequest) {
+        // Network-First strategy for HTML files
+        e.respondWith(
+            fetch(e.request)
+                .then((response) => {
+                    const copy = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+                    return response;
+                })
+                .catch(() => caches.match(e.request))
+        );
+    } else {
+        // Cache-First strategy for assets
+        e.respondWith(
+            caches.match(e.request).then((response) => {
+                return response || fetch(e.request);
+            })
+        );
+    }
 });
